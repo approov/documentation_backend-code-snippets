@@ -1,4 +1,5 @@
 # @link https://approov.io/docs/v2.0/approov-usage-documentation/#backend-integration-impact
+# @link https://github.com/approov/documentation_backend-code-snippets/blob/master/python/src/backend-integration-impact/hello-server-token-binding-protected.js
 def advanced_verify_token_payload(token, expected_payload):
     '''
         Verify token and check if payload data matches with the payload from a
