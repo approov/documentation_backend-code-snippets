@@ -53,7 +53,7 @@ func verifyApproovToken(response http.ResponseWriter, request *http.Request)  (*
     approovToken := request.Header["Approov-Token"]
 
     if approovToken == nil {
-        return nil, fmt.Errorf("token is missing")
+        return nil, fmt.Errorf("Token is missing.")
     }
 
     token, err := jwt.Parse(approovToken[0], func(token *jwt.Token) (interface{}, error) {
@@ -82,16 +82,16 @@ func verifyApproovTokenBinding(token *jwt.Token, request *http.Request) (jwt.Cla
 
     if ! has_pay_key {
         // We log a warning and don't return an error, because the Approov fail-over server doesn't provide the `pay` key.
-        logApproov("key 'pay' in the decoded token is missing or empty.", "WARNING")
+        logApproov("Key 'pay' in the decoded token is missing or empty.", "WARNING")
         return claims, nil
     }
 
-    // We use here the Authorization token, but feel free to use another header, but you need to bind this header to the
+    // We use the Authorization token here, but feel free to use another header. However, you need to bind this header to the
     // Approov token in the mobile app.
     token_binding_header := request.Header["Authorization"]
 
     if len(token_binding_header) != 1 {
-        return claims, fmt.Errorf("The header to perform the verification for the token binding is missing, empty or have more than 1 entry.")
+        return claims, fmt.Errorf("The header to perform the verification for the token binding is missing, empty or has more than one entry.")
     }
 
     // We need to hash and base64 encode the token binding header, because we need to compare it in the same way it was
@@ -100,7 +100,7 @@ func verifyApproovTokenBinding(token *jwt.Token, request *http.Request) (jwt.Cla
     token_binding_header_encoded := base64.StdEncoding.EncodeToString(token_binding_header_hashed[:])
 
     if token_binding_payload != token_binding_header_encoded {
-        return claims, fmt.Errorf("invalid token binding.")
+        return claims, fmt.Errorf("Invalid token binding.")
     }
 
     return claims, nil
@@ -118,11 +118,11 @@ func checkApproovTokenBinding(next http.Handler) http.Handler {
         }
 
         if ! token.Valid {
-            sendBadRequestResponse(response, "the token is invalid.")
+            sendBadRequestResponse(response, "the token is invalid")
             return
         }
 
-        logApproov("valid token", "INFO")
+        logApproov("Valid token.", "INFO")
 
         claims, err := verifyApproovTokenBinding(token, request)
 
@@ -134,7 +134,7 @@ func checkApproovTokenBinding(next http.Handler) http.Handler {
         // Use the returned claims to perform any additional checks.
         _ = claims
 
-        logApproov("valid token binding.", "INFO")
+        logApproov("Valid token binding.", "INFO")
 
         next.ServeHTTP(response, request)
     })
