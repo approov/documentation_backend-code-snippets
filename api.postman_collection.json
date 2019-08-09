@@ -12,7 +12,7 @@
 					"name": "valid requests",
 					"item": [
 						{
-							"name": "/ - Approov Token with valid signature and expire time",
+							"name": "/ - Approov token with valid signature and expire time",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -47,7 +47,7 @@
 					"name": "invalid requests",
 					"item": [
 						{
-							"name": "/ - Missing the Approov  Token",
+							"name": "/ - missing Approov token",
 							"request": {
 								"method": "GET",
 								"header": [],
@@ -70,7 +70,7 @@
 							"response": []
 						},
 						{
-							"name": "/ - Malformed Approov Token",
+							"name": "/ - malformed Approov token",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -99,7 +99,7 @@
 							"response": []
 						},
 						{
-							"name": "/ - Expired Approov Token with valid signature",
+							"name": "/ - expired Approov token with valid signature",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -161,7 +161,7 @@
 					"name": "valid requests",
 					"item": [
 						{
-							"name": "/ - Approov Token with payload that matches the Authorization token",
+							"name": "/ - Approov token with payload that matches the authorization token",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -191,12 +191,12 @@
 										""
 									]
 								},
-								"description": "The approov token contains a payload that is a base64 string of the sha256 hash for the oauth2-token.\n\nThis ties the approov token with the user authentication token, thus securing further the request."
+								"description": "The Approov token contains a payload that is a base64 string of the sha256 hash for the oauth2-token.\n\nThis ties the Approov token with the user authentication token, thus further securing the request."
 							},
 							"response": []
 						},
 						{
-							"name": "/ - Approov Token without the custom payload claim",
+							"name": "/ - Approov token without the custom payload claim",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -226,7 +226,7 @@
 										""
 									]
 								},
-								"description": "We need to accept the request as valid even when a custom payload claim is normally used in the Approov Token but is not present. This can happen when the Approov token comes from the Approov failover running in the Google Cloud."
+								"description": "We need to accept the request as valid even when a custom payload claim is normally used in the Approov token but is not present. This can happen when the Approov token comes from the Approov failover running in the Google Cloud."
 							},
 							"response": []
 						}
@@ -237,7 +237,7 @@
 					"name": "invalid requests",
 					"item": [
 						{
-							"name": "/ - Missing the Approov  Token",
+							"name": "/ - missing Approov token",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -266,7 +266,7 @@
 							"response": []
 						},
 						{
-							"name": "/ - Malformed Approov Token",
+							"name": "/ - malformed Approov token",
 							"request": {
 								"method": "GET",
 								"header": [
@@ -300,7 +300,7 @@
 							"response": []
 						},
 						{
-							"name": "/ - Approov Token with custom payload claim not matching the Authorization token",
+							"name": "/ - Approov token with custom payload claim not matching the authorization token",
 							"request": {
 								"method": "GET",
 								"header": [
