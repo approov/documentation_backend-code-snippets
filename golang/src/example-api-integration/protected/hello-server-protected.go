@@ -52,7 +52,7 @@ func verifyApproovToken(response http.ResponseWriter, request *http.Request)  (*
     approovToken := request.Header["Approov-Token"]
 
     if approovToken == nil {
-        return nil, fmt.Errorf("token is missing")
+        return nil, fmt.Errorf("Token is missing.")
     }
 
     token, err := jwt.Parse(approovToken[0], func(token *jwt.Token) (interface{}, error) {
@@ -85,11 +85,11 @@ func checkApproovToken(endpoint func(http.ResponseWriter, *http.Request)) http.H
         }
 
         if ! token.Valid {
-            sendBadRequestResponse(response, "the token is invalid.")
+            sendBadRequestResponse(response, "Token is invalid.")
             return
         }
 
-        logApproov("valid token", "INFO")
+        logApproov("Valid token.", "INFO")
 
         endpoint(response, request)
     })
