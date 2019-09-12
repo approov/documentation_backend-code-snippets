@@ -38,7 +38,7 @@ func sendBadRequestResponse(response http.ResponseWriter, message string) {
     json.NewEncoder(response).Encode(BadRequest{Error: "Bad Request"})
 }
 
-func hello(response http.ResponseWriter, request *http.Request) {
+func sendHelloRequestResponse(response http.ResponseWriter, request *http.Request) {
 
     response.Header().Set("Content-Type", "application/json")
     response.WriteHeader(http.StatusOK)
@@ -141,7 +141,7 @@ func checkApproovTokenBinding(next http.Handler) http.Handler {
 }
 
 func main() {
-    helloHandler := http.HandlerFunc(hello)
+    helloHandler := http.HandlerFunc(sendHelloRequestResponse)
     http.Handle("/", checkApproovTokenBinding(helloHandler))
 
     log.Println("Server listening on http://localhost:8002")
