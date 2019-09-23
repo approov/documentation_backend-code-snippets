@@ -20,25 +20,23 @@ type SuccessResponse struct {
     Message string `json:"message"`
 }
 
-type BadRequest struct {
-    Error string `json:"error"`
-}
+type ErrorResponse struct {}
 
 func logApproov(message, log_level string) {
     log.Println(log_level, Log_Tag, message)
 }
 
-func sendBadRequestResponse(response http.ResponseWriter, message string) {
+func errorResponse(response http.ResponseWriter, statusCode int, message string) {
 
     logApproov(message, "ERROR")
 
     response.Header().Set("Content-Type", "application/json")
-    response.WriteHeader(http.StatusBadRequest)
+    response.WriteHeader(statusCode)
 
-    json.NewEncoder(response).Encode(BadRequest{Error: "Bad Request"})
+    json.NewEncoder(response).Encode(ErrorResponse{})
 }
 
-func sendHelloRequestResponse(response http.ResponseWriter, request *http.Request) {
+func helloHandler(response http.ResponseWriter, request *http.Request) {
 
     response.Header().Set("Content-Type", "application/json")
     response.WriteHeader(http.StatusOK)
@@ -106,19 +104,19 @@ func verifyApproovTokenBinding(token *jwt.Token, request *http.Request) (jwt.Cla
     return claims, nil
 }
 
-func checkApproovTokenBinding(next http.Handler) http.Handler {
+func makeApproovCheckerHandler(handler func(http.ResponseWriter, *http.Request)) http.Handler {
 
     return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 
         token, err := verifyApproovToken(response, request)
 
         if err != nil {
-            sendBadRequestResponse(response, err.Error())
+            errorResponse(response, http.StatusUnauthorized, err.Error())
             return
         }
 
         if ! token.Valid {
-            sendBadRequestResponse(response, "the token is invalid")
+            errorResponse(response, http.StatusUnauthorized, "Token is invalid.")
             return
         }
 
@@ -127,7 +125,7 @@ func checkApproovTokenBinding(next http.Handler) http.Handler {
         claims, err := verifyApproovTokenBinding(token, request)
 
         if err != nil {
-            sendBadRequestResponse(response, err.Error())
+            errorResponse(response, http.StatusUnauthorized, err.Error())
             return
         }
 
@@ -136,13 +134,12 @@ func checkApproovTokenBinding(next http.Handler) http.Handler {
 
         logApproov("Valid token binding.", "INFO")
 
-        next.ServeHTTP(response, request)
+        handler(response, request)
     })
 }
 
 func main() {
-    helloHandler := http.HandlerFunc(sendHelloRequestResponse)
-    http.Handle("/", checkApproovTokenBinding(helloHandler))
+    http.Handle("/", makeApproovCheckerHandler(helloHandler))
 
     log.Println("Server listening on http://localhost:8002")
     http.ListenAndServe(":8002", nil)
