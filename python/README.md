@@ -1,3 +1,90 @@
 # PYTHON CODE SNIPPETS
 
 Python code snippets we will use in the [Approov 2 documentation](https://approov.io/docs/).
+
+
+## SETUP
+
+#### Clone
+
+```
+git clone git@github.com:approov/documentation_backend-code-snippets.git && cd documentation_backend-code-snippets/python
+```
+
+#### Install Dependencies
+
+From the root of the Python project run:
+
+```bash
+pip install --user -r requirements.txt
+```
+
+### Environment
+
+Inside each `src` folder exists a `.env.example` file that you will need to copy to `.env`, and you may want to customize the `APPROOV_BASE64_SECRET` value, if you will use other tokens then the ones provided in the [Postman Collection](./../api.postman_collection.json).
+
+
+## HOW TO RUN THE CODE SNIPPETS
+
+To run any of the example server just go inside its folder and run `flask run`, if inside docker you need to run `flask run -h 0.0.0.0` in order to expose the server outside the container network.
+
+```
+cd src/example-api-integration && flask run
+```
+
+or
+
+```
+cd src/backend-integration-impact && flask run
+```
+
+To interact with the server just use the Postman collection that you can download from [here](./../api.postman_collection.json).
+
+
+#### Approov Token Binding Example
+
+When the request is made with a valid `Approov-Token` that also contains a value in the key `pay` that matches the `Authorization` header, the request will be considered to come from a genuine mobile app, and to simulate it we can issue a request form a tool like Postman or Curl.
+
+The Python server output for a request with a valid Approov Token Binding:
+
+```
+$  cd src/backend-integration-impact && flask run
+ * Serving Flask app "hello-server-token-binding-protected" (lazy loading)
+ * Environment: development
+ * Debug mode: on
+ * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 688-921-132
+[2019-09-24 13:25:30,942] INFO in hello-server-token-binding-protected: Valid token binding.
+172.17.0.1 - - [24/Sep/2019 13:25:30] "GET / HTTP/1.1" 200 -
+```
+
+The request from Postman:
+
+![Valid Approov Token Binding Request Example](./../.assets/img/postman-valid-approov-token-binding.png)
+
+
+But you can test it also with CURL:
+
+```
+curl -iX GET \
+  http://localhost:8002/ \
+  -H 'Approov-Token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjQ3MTgwMTgyMjQuNzgwMzY4LCJwYXkiOiJWUUZGUEpaNjgyYU90eFJNanowa3RDSG15V2VFRWVTTXZYaDF1RDhKM3ZrPSJ9.N-KwuLeUt9s6TDibhX32AIkhobCYVh5-brVESqUxdBk' \
+  -H 'Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c' \
+  -H 'cache-control: no-cache'
+```
+
+That will receive this response from the server:
+
+```
+HTTP/1.0 200 OK
+Content-Type: application/json
+Content-Length: 32
+Server: Werkzeug/0.16.0 Python/3.7.4
+Date: Tue, 24 Sep 2019 13:26:16 GMT
+
+{
+  "message": "Hello World!"
+}
+```
