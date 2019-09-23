@@ -1,0 +1,19 @@
+{
+  "name": "approov2-code-snippets",
+  "version": "1.0.0",
+  "description": "NodeJS code snippets for Approov 2 documentation",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "unprotected-server": "node src/example-api-integration/hello-server-unprotected.js",
+    "protected-server": "node src/example-api-integration/hello-server-protected.js",
+    "token-binding-protected-server": "node src/backend-integration-impact/hello-server-token-binding-protected.js"
+  },
+  "author": "CriticalBlue.com",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "express": "^4.16.4",
+    "express-jwt": "^5.3.1"
+  },
+  "devDependencies": {}
+}
