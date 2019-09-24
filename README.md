@@ -7,11 +7,12 @@ The home for all code snippets we will use in the [Approov 2 documentation](http
 
 * [Python](./python)
 * [NodeJS](./nodejs)
+* [Golang](./golang)
 
 
 ## POSTMAN COLLECTION
 
-The Postman collection can be found in the root of this repository (./api.postman_collection.json), and it will work with any back-end code snippet, that provides a server implementation.
+The [Postman collection](./api.postman_collection.json) at the root of this repository will work with any back-end code snippet, that provides a server implementation.
 
 
 ## HOW TO USE
