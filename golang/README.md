@@ -32,7 +32,9 @@ To interact with the server just use the Postman collection that you can downloa
 
 #### Approov Token Binding Example
 
-This example is for using the request in Postman for an `Approov-Token` with a `pay` key that matches the `Authorization` header:
+When the request is made with a valid `Approov-Token` that also contains a value in the key `pay` that matches the `Authorization` header, the request will be considered to come from a genuine mobile app, and to simulate it we can issue a request form a tool like Postman or Curl.
+
+The Golang server output for a request with a valid Approov Token Binding:
 
 ```
 $ cd src/backend-integration-impact && go run hello-server-token-binding-protected.go
@@ -41,6 +43,11 @@ $ cd src/backend-integration-impact && go run hello-server-token-binding-protect
 2019/08/05 21:27:31 INFO | APPROOV: valid token binding.
 2019/08/05 21:27:31 Hello response sent...
 ```
+
+The request from Postman:
+
+![Valid Approov Token Binding Request Example](./../.assets/img/postman-valid-approov-token-binding.png)
+
 
 But you can test it also with CURL:
 
@@ -52,7 +59,7 @@ curl -iX GET \
   -H 'cache-control: no-cache'
 ```
 
-That will output:
+That will receive this response from the server:
 
 ```
 HTTP/1.1 200 OK
