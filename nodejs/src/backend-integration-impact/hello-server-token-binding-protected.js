@@ -6,7 +6,13 @@ const jwt = require('express-jwt')
 const crypto = require('crypto')
 const app = express()
 
-const base64Secret = "h+CX0tOzdAAR9l15bWAqvq7w9olk66daIH+Xk+IAHhVVHszjDzeGobzNnqyRze3lw/WVyWrc2gZfh3XXfBOmww=="
+const dotenv = require('dotenv').config()
+
+if (dotenv.error) {
+  console.debug('FAILED TO PARSE `.env` FILE | ' + dotenv.error)
+}
+
+const SECRET = dotenv.parsed.APPROOV_BASE64_SECRET
 
 const isEmpty = function(value) {
   return  (value === undefined) || (value === null) || (value === '')
@@ -20,13 +26,11 @@ const isEmptyString = function(value) {
   return (isEmpty(value) === true) || (isString(value) === false) ||  (value.trim() === '')
 }
 
-const BAD_REQUEST_RESPONSE = {
-  error: "Bad Request"
-}
+const ERROR_RESPONSE_BODY = {}
 
 // Callback that performs the Approov token check using the express-jwt library
 const checkApproovToken = jwt({
-  secret: Buffer.from(base64Secret, 'base64'), // decodes the Approov secret
+  secret: Buffer.from(SECRET, 'base64'), // decodes the Approov secret
   requestProperty: 'approovTokenDecoded',
   getToken: function fromApproovTokenHeader(req) {
     req.approovTokenError = false
@@ -43,8 +47,8 @@ const handlesApproovTokenError = function(err, req, res, next) {
 
     console.debug('APPROOV TOKEN ERROR: %s', err)
 
-    res.status(400)
-    res.json(BAD_REQUEST_RESPONSE)
+    res.status(401)
+    res.json(ERROR_RESPONSE_BODY)
     return
   }
 
@@ -81,8 +85,8 @@ const handlesApproovTokenBindingVerification = function(req, res, next) {
 
     if (isEmptyString(token_binding_payload)) {
         console.debug("APPROOV TOKEN BINDING ERROR: key 'pay' in the decoded token is missing or empty.")
-        res.status(400)
-        res.json(BAD_REQUEST_RESPONSE)
+        res.status(401)
+        res.json(ERROR_RESPONSE_BODY)
         return
     }
 
@@ -92,8 +96,8 @@ const handlesApproovTokenBindingVerification = function(req, res, next) {
 
     if (isEmptyString(token_binding_header)) {
         console.debug("APPROOV TOKEN BINDING ERROR: Missing or empty header to perform the verification for the token binding.")
-        res.status(400)
-        res.json(BAD_REQUEST_RESPONSE)
+        res.status(401)
+        res.json(ERROR_RESPONSE_BODY)
         return
     }
 
@@ -103,8 +107,8 @@ const handlesApproovTokenBindingVerification = function(req, res, next) {
 
     if (token_binding_payload !== token_binding_header_encoded) {
         console.debug("APPROOV TOKEN BINDING ERROR: Invalid token binding.")
-        res.status(400)
-        res.json(BAD_REQUEST_RESPONSE)
+        res.status(401)
+        res.json(ERROR_RESPONSE_BODY)
         return
     }
 

@@ -16,6 +16,11 @@ git clone git@github.com:approov/documentation_backend-code-snippets.git && cd d
 npm install
 ```
 
+#### Environment
+
+```
+cp .env.example .env
+```
 
 ## HOW TO RUN THE CODE SNIPPETS
 

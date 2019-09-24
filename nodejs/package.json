@@ -12,6 +12,7 @@
   "author": "CriticalBlue.com",
   "license": "Apache-2.0",
   "dependencies": {
+    "dotenv": "^8.1.0",
     "express": "^4.16.4",
     "express-jwt": "^5.3.1"
   },
