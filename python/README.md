@@ -45,25 +45,9 @@ To interact with the server just use the Postman collection that you can downloa
 
 When the request is made with a valid `Approov-Token` that also contains a value in the key `pay` that matches the `Authorization` header, the request will be considered to come from a genuine mobile app, and to simulate it we can issue a request form a tool like Postman or Curl.
 
-The Python server output for a request with a valid Approov Token Binding:
-
-```
-$  cd src/backend-integration-impact && flask run
- * Serving Flask app "hello-server-token-binding-protected" (lazy loading)
- * Environment: development
- * Debug mode: on
- * Running on http://0.0.0.0:5000/ (Press CTRL+C to quit)
- * Restarting with stat
- * Debugger is active!
- * Debugger PIN: 688-921-132
-[2019-09-24 13:25:30,942] INFO in hello-server-token-binding-protected: Valid token binding.
-172.17.0.1 - - [24/Sep/2019 13:25:30] "GET / HTTP/1.1" 200 -
-```
-
 The request from Postman:
 
 ![Valid Approov Token Binding Request Example](./../.assets/img/postman-valid-approov-token-binding.png)
-
 
 But you can test it also with CURL:
 
