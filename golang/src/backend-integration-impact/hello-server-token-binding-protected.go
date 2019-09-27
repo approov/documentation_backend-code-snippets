@@ -13,7 +13,6 @@ import (
     "crypto/sha256"
 )
 
-const Log_Tag = "| APPROOV:"
 const base64Secret = "h+CX0tOzdAAR9l15bWAqvq7w9olk66daIH+Xk+IAHhVVHszjDzeGobzNnqyRze3lw/WVyWrc2gZfh3XXfBOmww=="
 
 type SuccessResponse struct {
@@ -22,32 +21,19 @@ type SuccessResponse struct {
 
 type ErrorResponse struct {}
 
-func logApproov(message, log_level string) {
-    log.Println(log_level, Log_Tag, message)
-}
-
 func errorResponse(response http.ResponseWriter, statusCode int, message string) {
-
-    logApproov(message, "ERROR")
-
     response.Header().Set("Content-Type", "application/json")
     response.WriteHeader(statusCode)
-
     json.NewEncoder(response).Encode(ErrorResponse{})
 }
 
 func helloHandler(response http.ResponseWriter, request *http.Request) {
-
     response.Header().Set("Content-Type", "application/json")
     response.WriteHeader(http.StatusOK)
-
     json.NewEncoder(response).Encode(SuccessResponse{Message: "Hello, World!"})
-
-    log.Println("Hello response sent...")
 }
 
 func verifyApproovToken(response http.ResponseWriter, request *http.Request)  (*jwt.Token, error) {
-
     approovToken := request.Header["Approov-Token"]
 
     if approovToken == nil {
@@ -73,14 +59,11 @@ func verifyApproovToken(response http.ResponseWriter, request *http.Request)  (*
 }
 
 func verifyApproovTokenBinding(token *jwt.Token, request *http.Request) (jwt.Claims, error) {
-
     claims := token.Claims
-
     token_binding_payload, has_pay_key := claims.(jwt.MapClaims)["pay"]
 
     if ! has_pay_key {
-        // We log a warning and don't return an error, because the Approov fail-over server doesn't provide the `pay` key.
-        logApproov("Key 'pay' in the decoded token is missing or empty.", "WARNING")
+        // We don't return an error, because the Approov fail-over server doesn't provide the `pay` key.
         return claims, nil
     }
 
@@ -105,7 +88,6 @@ func verifyApproovTokenBinding(token *jwt.Token, request *http.Request) (jwt.Cla
 }
 
 func makeApproovCheckerHandler(handler func(http.ResponseWriter, *http.Request)) http.Handler {
-
     return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 
         token, err := verifyApproovToken(response, request)
@@ -120,8 +102,6 @@ func makeApproovCheckerHandler(handler func(http.ResponseWriter, *http.Request))
             return
         }
 
-        logApproov("Valid token.", "INFO")
-
         claims, err := verifyApproovTokenBinding(token, request)
 
         if err != nil {
@@ -132,15 +112,12 @@ func makeApproovCheckerHandler(handler func(http.ResponseWriter, *http.Request))
         // Use the returned claims to perform any additional checks.
         _ = claims
 
-        logApproov("Valid token binding.", "INFO")
-
         handler(response, request)
     })
 }
 
 func main() {
     http.Handle("/", makeApproovCheckerHandler(helloHandler))
-
     log.Println("Server listening on http://localhost:8002")
     http.ListenAndServe(":8002", nil)
 }

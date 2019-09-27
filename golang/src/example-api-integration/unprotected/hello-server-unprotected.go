@@ -14,18 +14,13 @@ type SuccessResponse struct {
 }
 
 func helloHandler(response http.ResponseWriter, request *http.Request) {
-
     response.Header().Set("Content-Type", "application/json")
     response.WriteHeader(http.StatusOK)
-
     json.NewEncoder(response).Encode(SuccessResponse{Message: "Hello, World!"})
-
-    log.Println("Hello response sent...")
 }
 
 func main() {
     http.HandleFunc("/", helloHandler)
-
     log.Println("Server listening on http://localhost:8002")
     http.ListenAndServe(":8002", nil)
 }
