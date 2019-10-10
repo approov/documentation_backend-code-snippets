@@ -5,15 +5,19 @@ const express = require('express')
 const jwt = require('express-jwt')
 const app = express()
 
-const base64Secret = "h+CX0tOzdAAR9l15bWAqvq7w9olk66daIH+Xk+IAHhVVHszjDzeGobzNnqyRze3lw/WVyWrc2gZfh3XXfBOmww=="
+const dotenv = require('dotenv').config()
 
-const BAD_REQUEST_RESPONSE = {
-  error: "Bad Request"
+if (dotenv.error) {
+  console.debug('FAILED TO PARSE `.env` FILE | ' + dotenv.error)
 }
+
+const SECRET = dotenv.parsed.APPROOV_BASE64_SECRET
+
+const ERROR_RESPONSE_BODY = {}
 
 // Callback that performs the Approov token check using the express-jwt library
 const checkApproovToken = jwt({
-  secret: Buffer.from(base64Secret, 'base64'), // decodes the Approov secret
+  secret: Buffer.from(SECRET, 'base64'), // decodes the Approov secret
   requestProperty: 'approovTokenDecoded',
   getToken: function fromApproovTokenHeader(req) {
     req.approovTokenError = false
@@ -30,8 +34,8 @@ const handlesApproovTokenError = function(err, req, res, next) {
 
     console.debug('APPROOV TOKEN ERROR: %s', err)
 
-    res.status(400)
-    res.json(BAD_REQUEST_RESPONSE)
+    res.status(401)
+    res.json(ERROR_RESPONSE_BODY)
     return
   }
 
