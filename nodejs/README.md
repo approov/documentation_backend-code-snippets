@@ -45,24 +45,9 @@ To interact with the server just use the Postman collection that you can downloa
 
 When the request is made with a valid `Approov-Token` that also contains a value in the key `pay` that matches the `Authorization` header, the request will be considered to come from a genuine mobile app, and to simulate it we can issue a request form a tool like Postman or Curl.
 
-The NodeJS server output for a request with a valid Approov Token Binding:
-
-
-```
-$ npm run token-binding-protected-server
-
-> approov2-code-snippets@1.0.0 token-binding-protected-server /home/node/workspace
-> node src/backend-integration-impact/hello-server-token-binding-protected.js
-
-Server listening on http://localhost:8002
-VALID APPROOV TOKEN
-VALID APPROOV TOKEN BINDING.
-```
-
 The request from Postman:
 
 ![Valid Approov Token Binding Request Example](./../.assets/img/postman-valid-approov-token-binding.png)
-
 
 But you can test it also with CURL:
 

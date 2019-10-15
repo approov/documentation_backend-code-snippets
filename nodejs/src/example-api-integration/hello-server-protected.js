@@ -28,12 +28,8 @@ const checkApproovToken = jwt({
 
 // Callback to handle the errors occurred while checking the Approov token.
 const handlesApproovTokenError = function(err, req, res, next) {
-
   if (err.name === 'UnauthorizedError') {
     req.approovTokenError = true
-
-    console.debug('APPROOV TOKEN ERROR: %s', err)
-
     res.status(401)
     res.json(ERROR_RESPONSE_BODY)
     return
@@ -45,8 +41,10 @@ const handlesApproovTokenError = function(err, req, res, next) {
 
 // Callback to handles when an Approov token is successfully validated.
 const handlesApproovTokenSuccess = function(req, res, next) {
-  if (req.approovTokenError === false) {
-    console.debug('VALID APPROOV TOKEN')
+  if (req.approovTokenError === true) {
+    res.status(401)
+    res.json(ERROR_RESPONSE_BODY)
+    return
   }
 
   next()

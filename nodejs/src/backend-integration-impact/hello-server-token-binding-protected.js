@@ -41,12 +41,8 @@ const checkApproovToken = jwt({
 
 // Callback to handle the errors occurred while checking the Approov token.
 const handlesApproovTokenError = function(err, req, res, next) {
-
   if (err.name === 'UnauthorizedError') {
     req.approovTokenError = true
-
-    console.debug('APPROOV TOKEN ERROR: %s', err)
-
     res.status(401)
     res.json(ERROR_RESPONSE_BODY)
     return
@@ -58,8 +54,10 @@ const handlesApproovTokenError = function(err, req, res, next) {
 
 // Callback to handles when an Approov token is successfully validated.
 const handlesApproovTokenSuccess = function(req, res, next) {
-  if (req.approovTokenError === false) {
-    console.debug('VALID APPROOV TOKEN')
+  if (req.approovTokenError === true) {
+    res.status(401)
+    res.json(ERROR_RESPONSE_BODY)
+    return
   }
 
   next()
@@ -76,15 +74,12 @@ const handlesApproovTokenBindingVerification = function(req, res, next) {
     token_binding_payload = req.approovTokenDecoded.pay
 
     if (token_binding_payload === undefined) {
-        console.debug("APPROOV TOKEN BINDING WARNING: key 'pay' is missing.")
-
         // We let the request to continue as usual, because the Approov fail-over server doesn't provide the `pay` key.
         next()
         return
     }
 
     if (isEmptyString(token_binding_payload)) {
-        console.debug("APPROOV TOKEN BINDING ERROR: key 'pay' in the decoded token is missing or empty.")
         res.status(401)
         res.json(ERROR_RESPONSE_BODY)
         return
@@ -95,7 +90,6 @@ const handlesApproovTokenBindingVerification = function(req, res, next) {
     token_binding_header = req.get('Authorization')
 
     if (isEmptyString(token_binding_header)) {
-        console.debug("APPROOV TOKEN BINDING ERROR: Missing or empty header to perform the verification for the token binding.")
         res.status(401)
         res.json(ERROR_RESPONSE_BODY)
         return
@@ -106,13 +100,10 @@ const handlesApproovTokenBindingVerification = function(req, res, next) {
     const token_binding_header_encoded = crypto.createHash('sha256').update(token_binding_header, 'utf-8').digest('base64')
 
     if (token_binding_payload !== token_binding_header_encoded) {
-        console.debug("APPROOV TOKEN BINDING ERROR: Invalid token binding.")
         res.status(401)
         res.json(ERROR_RESPONSE_BODY)
         return
     }
-
-    console.debug("VALID APPROOV TOKEN BINDING.")
 
     // Let the request continue as usual.
     next()

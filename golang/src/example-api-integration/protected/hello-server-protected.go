@@ -12,7 +12,6 @@ import (
     jwt "github.com/dgrijalva/jwt-go"
 )
 
-const Log_Tag = "| APPROOV:"
 const base64Secret = "h+CX0tOzdAAR9l15bWAqvq7w9olk66daIH+Xk+IAHhVVHszjDzeGobzNnqyRze3lw/WVyWrc2gZfh3XXfBOmww=="
 
 type SuccessResponse struct {
@@ -21,32 +20,19 @@ type SuccessResponse struct {
 
 type ErrorResponse struct {}
 
-func logApproov(message, log_level string) {
-    log.Println(log_level, Log_Tag, message)
-}
-
 func errorResponse(response http.ResponseWriter, statusCode int, message string) {
-
-    logApproov(message, "ERROR")
-
     response.Header().Set("Content-Type", "application/json")
     response.WriteHeader(statusCode)
-
     json.NewEncoder(response).Encode(ErrorResponse{})
 }
 
 func helloHandler(response http.ResponseWriter, request *http.Request) {
-
     response.Header().Set("Content-Type", "application/json")
     response.WriteHeader(http.StatusOK)
-
     json.NewEncoder(response).Encode(SuccessResponse{Message: "Hello, World!"})
-
-    log.Println("Hello response sent...")
 }
 
 func verifyApproovToken(response http.ResponseWriter, request *http.Request)  (*jwt.Token, error) {
-
     approovToken := request.Header["Approov-Token"]
 
     if approovToken == nil {
@@ -71,8 +57,7 @@ func verifyApproovToken(response http.ResponseWriter, request *http.Request)  (*
     return token, err
 }
 
-func makeApproovCheckerHandler(endpoint func(http.ResponseWriter, *http.Request)) http.Handler {
-
+func makeApproovCheckerHandler(handler func(http.ResponseWriter, *http.Request)) http.Handler {
     return http.HandlerFunc(func(response http.ResponseWriter, request *http.Request) {
 
         token, err := verifyApproovToken(response, request)
@@ -87,15 +72,12 @@ func makeApproovCheckerHandler(endpoint func(http.ResponseWriter, *http.Request)
             return
         }
 
-        logApproov("Valid token.", "INFO")
-
-        endpoint(response, request)
+        handler(response, request)
     })
 }
 
 func main() {
     http.Handle("/", makeApproovCheckerHandler(helloHandler))
-
     log.Println("Server listening on http://localhost:8002")
     http.ListenAndServe(":8002", nil)
 }

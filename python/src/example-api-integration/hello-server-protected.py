@@ -15,15 +15,12 @@ SECRET = getenv('APPROOV_BASE64_SECRET')
 
 app = Flask(__name__)
 
-
 def verifyApproovToken(request):
-
   # Get the Approov Token from header
   approov_token = request.headers.get("Approov-Token")
 
   # If we didn't find a token, then reject the request
   if approov_token == "":
-    app.logger.info("Missing the Approov token header.")
     return None
 
   try:
@@ -31,22 +28,18 @@ def verifyApproovToken(request):
     approov_token_claims = jwt.decode(approov_token, base64.b64decode(SECRET), algorithms=['HS256'])
   except jwt.ExpiredSignatureError as e:
     # Signature has expired, token is bad
-    app.logger.info(e)
     return None
   except jwt.InvalidTokenError as e:
     # Token could not be decoded, token is bad
-    app.logger.info(e)
     return None
 
   return approov_token_claims
 
 @app.route("/")
 def hello():
-
   approov_token_claims = verifyApproovToken(request)
 
   if approov_token_claims is None:
-    app.logger.info("Invalid Approov token.")
     abort(make_response(jsonify({}), 401))
 
   return jsonify({"message": "Hello World!"})
