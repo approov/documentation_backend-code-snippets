@@ -1,4 +1,4 @@
-// @link https://approov.io/docs/v2.0/approov-usage-documentation/#backend-integration-impact
+// @link https://approov.io/docs/v2.1/approov-usage-documentation/#backend-integration-impact
 // @link https://github.com/approov/documentation_backend-code-snippets/blob/master/nodejs/src/backend-integration-impact/hello-server-token-binding-protected.js
 
 const express = require('express')

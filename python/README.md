@@ -21,7 +21,16 @@ pip install --user -r requirements.txt
 
 ### Environment
 
-Inside each `src` folder exists a `.env.example` file that you will need to copy to `.env`, and you may want to customize the `APPROOV_BASE64_SECRET` value, if you will use other tokens then the ones provided in the [Postman Collection](./../api.postman_collection.json).
+Inside each `src` folder exists a `.env.example` file that you will need to copy to `.env`.
+
+The `APPROOV_BASE64_SECRET` in the `.env.example` file was generated with `openssl rand -base64 64 | tr -d '\n'; echo`,
+and the JWT tokens used in the [Postman Collection](./../api.postman_collection.json) of this project were created in the
+https://jwt.io site. To create your own tokens you can use [this example](https://jwt.io/#debugger-io?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjQ3MDg2ODMyMDUuODkxOTEyfQ.c8I4KNndbThAQ7zlgX4_QDtcxCrD9cff1elaCJe9p9U),
+that doesn't contain the Approov token binding, or you can use the [token binding](https://jwt.io/#debugger-io?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJleHAiOjQ3MTgwMTgyMjQuNzgwMzY4LCJwYXkiOiJWUUZGUEpaNjgyYU90eFJNanowa3RDSG15V2VFRWVTTXZYaDF1RDhKM3ZrPSJ9.N-KwuLeUt9s6TDibhX32AIkhobCYVh5-brVESqUxdBk) example.
+Please don't forget to provide the secret to sign the JWT token, that is whatever you have defined in `APPROOV_BASE64_SECRET`.
+
+> **NOTE:** For production usage the secret is always retrieved with the Approov CLI tool, that can be also used to
+            generate valid tokens for testing purposes. Check the Approov CLI tool docs [here](https://approov.io/docs/v2.1/approov-cli-tool-reference/#token-commands).
 
 
 ## HOW TO RUN THE CODE SNIPPETS

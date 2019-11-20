@@ -1,9 +1,9 @@
-// @link https://approov.io/docs/v2.0/approov-usage-documentation/#example-api-integration
-// @link https://github.com/approov/documentation_backend-code-snippets/blob/master/golang/src/example-api-integration/hello-server-protected.js
-
+// @link https://approov.io/docs/v2.1/approov-usage-documentation/#example-api-integration
+// @link https://github.com/approov/documentation_backend-code-snippets/blob/master/golang/src/example-api-integration/protected/hello-server-protected.go
 package main
 
 import (
+    "os"
     "fmt"
     "encoding/json"
     "encoding/base64"
@@ -12,7 +12,7 @@ import (
     jwt "github.com/dgrijalva/jwt-go"
 )
 
-const base64Secret = "h+CX0tOzdAAR9l15bWAqvq7w9olk66daIH+Xk+IAHhVVHszjDzeGobzNnqyRze3lw/WVyWrc2gZfh3XXfBOmww=="
+var base64Secret = os.Getenv("APPROOV_BASE64_SECRET")
 
 type SuccessResponse struct {
     Message string `json:"message"`
@@ -79,5 +79,8 @@ func makeApproovCheckerHandler(handler func(http.ResponseWriter, *http.Request))
 func main() {
     http.Handle("/", makeApproovCheckerHandler(helloHandler))
     log.Println("Server listening on http://localhost:8002")
-    http.ListenAndServe(":8002", nil)
+    err := http.ListenAndServe(":8002", nil)
+    if err != nil {
+        log.Fatal("Server Error: " + err.Error())
+    }
 }
